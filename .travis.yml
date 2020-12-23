@@ -20,3 +20,36 @@ notifications:
   email:
     recipients:
       - ljinsk3@gmail.com
+
+before_deploy:
+  - zip -r yellowstone *
+  - mkdir -p deploy
+  - mv yellowstone.zip deploy/yellowstone.zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: yellowstone-s3
+    region: ap-northeast-2
+    skip_cleanup: true
+    local_dir: deploy
+    acl: public_read
+    wait-until-deployed: true
+    on:
+      repo: yeonnseok/yellowstone
+      branch: master
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: yellowstone-s3
+    key: yellowstone.zip
+    bundle_type: zip
+    application: yellowstone-application
+    deployment_group: yellowstone-group
+    region: ap-northeast-2
+    wait-until-deployed: true
+    on:
+      repo: yeonnseok/yellowstone
+      branch: master
