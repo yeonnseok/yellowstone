@@ -11,7 +11,7 @@ public class YellowstoneApplication {
 
 	@GetMapping("/")
 	public String home() {
-		return "Welcome YellowStone";
+		return "Welcome YellowStone!!";
 	}
 
 	public static void main(String[] args) {
